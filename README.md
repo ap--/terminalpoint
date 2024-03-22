@@ -46,6 +46,15 @@ $ pip install terminalpoint
 
 Although I recommend installation via `pipx`.
 
+## Example
+
+After installation you can download the example [here](https://github.com/ap--/terminalpoint/raw/main/examples/presentation_01.tpt.md)
+and try it with:
+
+```console
+$ terminalpoint presentation_01.tpt.md
+```
+
 ## Contributing
 
 Contributions are very welcome :heart:
