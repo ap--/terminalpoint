@@ -36,8 +36,7 @@ def run(
 ) -> None:
     """Display a presentation"""
     _ = version
-    data = presentation.read_text()
-    Presentation(data).run()
+    Presentation(file=presentation).run()
 
 
 if __name__ == "__main__":

@@ -29,6 +29,7 @@ The `######` h6 header is misused to center a line of text.
 ## Special Features
 
 - :hatched_chick: **Toggle Dark Mode** by pressing `d` (hidden feature)
+- :whale: **Reload slides** by pressing `r` (hidden feature)
 - :snake: **Launch Python** by pressing `p`
 - :owl: **Launch a Shell** by pressing `s`
 

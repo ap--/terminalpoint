@@ -1,7 +1,9 @@
 import os
 import re
 import subprocess
+import tempfile
 from os import system
+from pathlib import Path
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
@@ -32,6 +34,7 @@ class Presentation(App):
     slide_no: var[int] = var(0)
     BINDINGS = [
         Binding("d", "toggle_dark", "Toggle dark mode", show=False),
+        Binding("r", "reload_slides", "Reload slides", show=False),
         Binding("q", "quit", "Quit", key_display="q"),
         Binding("h", "previous_slide", "Previous Slide", key_display="h"),
         Binding("l", "next_slide", "Next Slide", key_display="l"),
@@ -39,14 +42,20 @@ class Presentation(App):
         Binding("s", "shell", "Shell", key_display="s"),
     ]
 
-    def __init__(self, slides: str):
+    def __init__(self, file: Path):
         super().__init__()
-        _slides = re.split(r"^-+$", slides, flags=re.MULTILINE)
-        self.slides: list[str] = _slides
+        self._file = file
+        self._tpre = re.compile(r"^---+$", flags=re.MULTILINE)
+        self.slides = self._tpre.split(file.read_text())
 
     def compose(self) -> ComposeResult:
-        yield Markdown(self.slides[0], id="slide")
+        yield Markdown(self.slides[self.slide_no], id="slide")
         yield Footer()
+
+    def action_reload_slides(self) -> None:
+        self.slides[:] = self._tpre.split(self._file.read_text())
+        self.slide_no = min(self.slide_no, len(self.slides) - 1)
+        self.query_one("#slide", Markdown).update(self.slides[self.slide_no])
 
     def action_previous_slide(self) -> None:
         self.slide_no = max(0, self.slide_no - 1)
@@ -71,5 +80,8 @@ class Presentation(App):
 
 
 if __name__ == "__main__":
-    app = Presentation(default_slide)
-    app.run()
+    with tempfile.NamedTemporaryFile(mode="rw", suffix=".tpt.md") as f:
+        f.write(default_slide)
+        f.flush()
+        app = Presentation(file=Path(f.name))
+        app.run()
